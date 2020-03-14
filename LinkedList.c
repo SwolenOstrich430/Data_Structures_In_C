@@ -16,11 +16,25 @@ struct Node {
 // knows what's good, that'd be gret to hear)
 struct LinkedList {
     struct Node *start;
-    void (*append)(int value, struct LinkedList *ll);
-    void (*forEach)(void (*cb) (), struct LinkedList ll);
+    int (*getLength)(struct LinkedList list);
+    void (*append)(int value, struct LinkedList *list);
+    void(*removeAtIndex)(int removeIndex, struct LinkedList *list);
+    void (*forEach)(void (*cb) (), struct LinkedList list);
     struct LinkedList (*map)(int (*cb) (int val), struct LinkedList list);
     struct LinkedList (*filter)(bool (*cb) (int val), struct LinkedList list);
 };
+// get the length of the list 
+int getLength(struct LinkedList list) {
+    int length = 1;
+    struct Node *currNode = list.start;
+
+    while(currNode->next != NULL) {
+        length++;
+        currNode = currNode->next;
+    }
+
+    return length;
+}
 // "member method" that adds a new node to the end 
 // of the LinkedList
 void append(int newVal, struct LinkedList *list) {
@@ -40,6 +54,47 @@ void append(int newVal, struct LinkedList *list) {
         currNode->next = newNode;
     }
 }
+// removes an element in the array at the index specified in the 
+// input parameter
+
+// need to do different things if index is 0 or length - 1
+
+void removeAtIndex(int removeIndex, struct LinkedList *list) {
+    struct Node *currNode = list->start->next;
+    struct Node *previousNode = list->start;
+
+    if(removeIndex == 0) {
+        list->start = currNode;
+        free(previousNode);
+
+        return;
+    }
+
+    int listLength = list->getLength(*list) - 1;
+    int counter = 1;
+    printf("target remove is %d\n", removeIndex);
+
+    while(currNode->next != NULL && counter <= removeIndex) {
+        printf("getting in loop with index: %d\n", counter);
+        if(counter == removeIndex) {
+            printf("we got in the if statement\n");
+            previousNode->next = currNode->next;
+
+            free(currNode);
+        }
+
+        counter++;
+        previousNode = currNode;
+        currNode = currNode->next;
+    }
+
+    printf("length: %d\n", listLength);
+    if(removeIndex == listLength) {
+        printf("we go in the last if statement\n");
+        previousNode->next = NULL;
+        free(currNode);
+    }
+}
 // implementing javascript's forEach array method on LinkedList
 // loops through all nodes in the list and calls a callback
 // function on each node. 
@@ -53,7 +108,9 @@ void forEach(void (*cb) (struct Node*), struct LinkedList list) {
 
     (*cb) (currNode);
 }
-
+// implementing javascript's map method => for every element in 
+// the array, perform an operation on the value of it with the 
+// callback function, and add it to a new array
 struct LinkedList map(int (*cb) (int val), struct LinkedList list) {
     // get the starting node of the list to copy
     struct Node *currNod = list.start;
@@ -79,7 +136,10 @@ struct LinkedList map(int (*cb) (int val), struct LinkedList list) {
 
     return *newLinkedList;
 }
-
+// implementing javascript's filter method => for every element in 
+// the array, if the value of a node returns true when passed into 
+// the given callback function, add it to a new array, if it doesn't, 
+// do not add it to the new array. 
 struct LinkedList filter(bool (*cb) (int val), struct LinkedList list) {
     // get the starting node of the list to copy
     struct Node *currNod = list.start;
@@ -134,26 +194,20 @@ bool isEven(int val) {
 // just testing for now, will export this module to be used in 
 // separate file once it's implemented
 int main(void) {
-    struct Node firstNode = { 1, 0 };
-    struct LinkedList firstLinkedList = { NULL, &append, &forEach, &map, &filter };
+    struct LinkedList firstLinkedList = { NULL, &getLength, &append, &removeAtIndex, &forEach, &map, &filter };
     firstLinkedList.append(1, &firstLinkedList);
     firstLinkedList.append(2, &firstLinkedList);
     firstLinkedList.append(3, &firstLinkedList);
     firstLinkedList.append(4, &firstLinkedList);
     firstLinkedList.append(5, &firstLinkedList);
-    firstLinkedList.append(6, &firstLinkedList);
-    firstLinkedList.append(7, &firstLinkedList);
-    firstLinkedList.append(8, &firstLinkedList);
 
 
     firstLinkedList.forEach(&printElem, firstLinkedList);
-    struct LinkedList newLinkedList = firstLinkedList.map(&addOneVal, firstLinkedList);
+    
+    firstLinkedList.removeAtIndex(4, &firstLinkedList);
+    firstLinkedList.forEach(&printElem, firstLinkedList);
     
 
-    newLinkedList.forEach(&printElem, newLinkedList);
-
-    struct LinkedList blah = firstLinkedList.filter(&isEven, firstLinkedList);
-    blah.forEach(&printElem, blah);
     // struct Node *n = newLinkedList.start;
     // printf("pointer to node: %p", n);
     // printf("value at node: %d", n->value);
