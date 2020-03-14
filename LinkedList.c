@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h> 
+#include<stdbool.h>
 
 // struct containing a value and a pointer to the 
 // next node in the linked list. If node in list 
@@ -18,6 +19,7 @@ struct LinkedList {
     void (*append)(int value, struct LinkedList *ll);
     void (*forEach)(void (*cb) (), struct LinkedList ll);
     struct LinkedList (*map)(int (*cb) (int val), struct LinkedList list);
+    struct LinkedList (*filter)(bool (*cb) (int val), struct LinkedList list);
 };
 // "member method" that adds a new node to the end 
 // of the LinkedList
@@ -78,6 +80,37 @@ struct LinkedList map(int (*cb) (int val), struct LinkedList list) {
     return *newLinkedList;
 }
 
+struct LinkedList filter(bool (*cb) (int val), struct LinkedList list) {
+    // get the starting node of the list to copy
+    struct Node *currNod = list.start;
+    // starting new list for nodes to be appended to 
+    struct LinkedList *newLinkedList = (struct LinkedList *)malloc(sizeof(struct LinkedList));
+    // initializing new linked list with member methods and null as pointer to starting node
+    newLinkedList->append = &append;
+    newLinkedList->forEach = &forEach;
+    newLinkedList->map = &map;
+    newLinkedList->filter = &filter;
+    newLinkedList->start = NULL;
+    // getting node to track current node in original list
+    struct Node *currNode = list.start;
+    // while tracking node from original list does is not the last node in the list
+    while(currNode->next != NULL) {
+        bool shouldAddToArray = (*cb) (currNode->value);
+
+        if(shouldAddToArray) {
+            newLinkedList->append(currNode->value, newLinkedList);
+        }
+
+        currNode = currNode->next;
+    }
+
+    bool shouldAddFinalToArray = (*cb) (currNode->value);
+    if(shouldAddFinalToArray) newLinkedList->append(currNode->value, newLinkedList);
+
+    return *newLinkedList;
+    
+}
+
 void addOne(struct Node *node) {
     node->value = node->value + 1;
 }
@@ -94,20 +127,33 @@ void printElem(struct Node *node) {
     printf("value at current elem is: %d\n", node->value);
 }
 
+bool isEven(int val) {
+    return val % 2 == 0;
+}
+
 // just testing for now, will export this module to be used in 
 // separate file once it's implemented
 int main(void) {
     struct Node firstNode = { 1, 0 };
-    struct LinkedList firstLinkedList = { NULL, &append, &forEach, &map };
+    struct LinkedList firstLinkedList = { NULL, &append, &forEach, &map, &filter };
     firstLinkedList.append(1, &firstLinkedList);
     firstLinkedList.append(2, &firstLinkedList);
     firstLinkedList.append(3, &firstLinkedList);
+    firstLinkedList.append(4, &firstLinkedList);
+    firstLinkedList.append(5, &firstLinkedList);
+    firstLinkedList.append(6, &firstLinkedList);
+    firstLinkedList.append(7, &firstLinkedList);
+    firstLinkedList.append(8, &firstLinkedList);
+
 
     firstLinkedList.forEach(&printElem, firstLinkedList);
     struct LinkedList newLinkedList = firstLinkedList.map(&addOneVal, firstLinkedList);
     
 
     newLinkedList.forEach(&printElem, newLinkedList);
+
+    struct LinkedList blah = firstLinkedList.filter(&isEven, firstLinkedList);
+    blah.forEach(&printElem, blah);
     // struct Node *n = newLinkedList.start;
     // printf("pointer to node: %p", n);
     // printf("value at node: %d", n->value);
