@@ -11,7 +11,7 @@ struct Stack {
     struct Node *start;
     void (*pop)(struct Stack *stack);
     void (*push)(int newVal, struct Stack *stack);
-    void (*peek)(struct Stack *stack);
+    int (*peek)(struct Stack stack);
     void (*forEach)(void (*cb) (int value), struct Stack stack);
 };
 
@@ -40,8 +40,10 @@ void push(int newVal, struct Stack *stack) {
     currNode->next = newNode;
 }
 
-void peek(struct Stack *stack) {
-    
+int peek(struct Stack stack) {
+    struct Node *topNode = stack.start;
+
+    return topNode->value;
 }
 
 void forEach(void (*cb) (int value), struct Stack stack) {
@@ -67,5 +69,9 @@ int main(void) {
     newStack.push(2, &newStack);
     newStack.push(3, &newStack);
     newStack.forEach(&printElem, newStack);
+
+    int topVal = newStack.peek(newStack);
+    printf("sadfasdffasfasfasfasfasfadfs\n");
+    printf("top value: %d", topVal);
     return 0;
 }
