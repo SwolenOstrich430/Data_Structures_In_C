@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h> 
-#include<stdbool.h>
+#include <stdbool.h>
 
 // struct containing a value and a pointer to the 
 // next node in the linked list. If node in list 
@@ -56,9 +56,6 @@ void append(int newVal, struct LinkedList *list) {
 }
 // removes an element in the array at the index specified in the 
 // input parameter
-
-// need to do different things if index is 0 or length - 1
-
 void removeAtIndex(int removeIndex, struct LinkedList *list) {
     struct Node *currNode = list->start->next;
     struct Node *previousNode = list->start;
@@ -72,12 +69,9 @@ void removeAtIndex(int removeIndex, struct LinkedList *list) {
 
     int listLength = list->getLength(*list) - 1;
     int counter = 1;
-    printf("target remove is %d\n", removeIndex);
 
     while(currNode->next != NULL && counter <= removeIndex) {
-        printf("getting in loop with index: %d\n", counter);
         if(counter == removeIndex) {
-            printf("we got in the if statement\n");
             previousNode->next = currNode->next;
 
             free(currNode);
@@ -88,9 +82,7 @@ void removeAtIndex(int removeIndex, struct LinkedList *list) {
         currNode = currNode->next;
     }
 
-    printf("length: %d\n", listLength);
     if(removeIndex == listLength) {
-        printf("we go in the last if statement\n");
         previousNode->next = NULL;
         free(currNode);
     }
@@ -169,49 +161,4 @@ struct LinkedList filter(bool (*cb) (int val), struct LinkedList list) {
 
     return *newLinkedList;
     
-}
-
-void addOne(struct Node *node) {
-    node->value = node->value + 1;
-}
-
-int addOneVal(int value) {
-    int *newVal = (int*)malloc(sizeof(int));
-    *newVal = value + 7;
-
-    return *newVal;
-}
-
-// dummy function we're using to test the forEach method
-void printElem(struct Node *node) {
-    printf("value at current elem is: %d\n", node->value);
-}
-
-bool isEven(int val) {
-    return val % 2 == 0;
-}
-
-// just testing for now, will export this module to be used in 
-// separate file once it's implemented
-int main(void) {
-    struct LinkedList firstLinkedList = { NULL, &getLength, &append, &removeAtIndex, &forEach, &map, &filter };
-    firstLinkedList.append(1, &firstLinkedList);
-    firstLinkedList.append(2, &firstLinkedList);
-    firstLinkedList.append(3, &firstLinkedList);
-    firstLinkedList.append(4, &firstLinkedList);
-    firstLinkedList.append(5, &firstLinkedList);
-
-
-    firstLinkedList.forEach(&printElem, firstLinkedList);
-    
-    firstLinkedList.removeAtIndex(4, &firstLinkedList);
-    firstLinkedList.forEach(&printElem, firstLinkedList);
-    
-
-    // struct Node *n = newLinkedList.start;
-    // printf("pointer to node: %p", n);
-    // printf("value at node: %d", n->value);
-    // printf("pointer to next node: %p", n->next);
-
-    return 0;
 }
