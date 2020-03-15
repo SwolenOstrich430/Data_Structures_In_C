@@ -18,7 +18,7 @@ struct Stack {
 
 
 int getLength(struct Stack stack)  {
-    if(stack->start == NULL) {
+    if(stack.start == NULL) {
         return 0;
     }
 
@@ -39,6 +39,14 @@ void pop(struct Stack *stack) {
     }
 
     struct Node *startNode = stack->start;
+
+    if(startNode->next == NULL) {
+        stack->start = NULL;
+        free(startNode);
+
+        return;
+    } 
+
     struct Node *secondNode = startNode->next;
 
     stack->start = secondNode;
@@ -72,16 +80,5 @@ int peek(struct Stack stack) {
 
     struct Node *topNode = stack.start;
     return topNode->value;
-}
-
-void forEach(void (*cb) (int value), struct Stack stack) {
-    struct Node *currNode = stack.start;
-
-    while(currNode->next != NULL) {
-        (*cb) (currNode->value);
-       currNode = currNode->next;
-    }
-
-    (*cb) (currNode->value);
 }
 

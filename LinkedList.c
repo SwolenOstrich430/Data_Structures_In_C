@@ -19,7 +19,7 @@ struct LinkedList {
     int (*getLength)(struct LinkedList list);
     void (*append)(int value, struct LinkedList *list);
     void(*removeAtIndex)(int removeIndex, struct LinkedList *list);
-    void (*forEach)(void (*cb) (), struct LinkedList list);
+    void (*forEach)(void (*cb) (int val), struct LinkedList list);
     struct LinkedList (*map)(int (*cb) (int val), struct LinkedList list);
     struct LinkedList (*filter)(bool (*cb) (int val), struct LinkedList list);
 };
@@ -91,6 +91,11 @@ void removeAtIndex(int removeIndex, struct LinkedList *list) {
 // loops through all nodes in the list and calls a callback
 // function on each node. 
 void forEach(void (*cb) (struct Node*), struct LinkedList list) {
+    if(list.start == NULL) {
+        printf("the list is empty");
+        return;
+    }
+
     struct Node *currNode = list.start;
 
     while(currNode->next != NULL) {
@@ -104,6 +109,10 @@ void forEach(void (*cb) (struct Node*), struct LinkedList list) {
 // the array, perform an operation on the value of it with the 
 // callback function, and add it to a new array
 struct LinkedList map(int (*cb) (int val), struct LinkedList list) {
+    if(list.start == NULL) {
+        printf("the list is empty");
+        return;
+    }
     // get the starting node of the list to copy
     struct Node *currNod = list.start;
     // starting new list for nodes to be appended to 
@@ -133,6 +142,10 @@ struct LinkedList map(int (*cb) (int val), struct LinkedList list) {
 // the given callback function, add it to a new array, if it doesn't, 
 // do not add it to the new array. 
 struct LinkedList filter(bool (*cb) (int val), struct LinkedList list) {
+    if(list.start == NULL) {
+        printf("the list is empty");
+        return;
+    }
     // get the starting node of the list to copy
     struct Node *currNod = list.start;
     // starting new list for nodes to be appended to 
