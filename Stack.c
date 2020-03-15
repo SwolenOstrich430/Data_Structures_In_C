@@ -12,12 +12,37 @@ struct Stack {
     void (*pop)(struct Stack *stack);
     void (*push)(int newVal, struct Stack *stack);
     int (*peek)(struct Stack stack);
+    int (*getLength)(struct Stack stack);
     void (*forEach)(void (*cb) (int value), struct Stack stack);
 };
 
 
-void pop(struct Stack *stack) {
+int getLength(struct Stack stack)  {
+    if(stack->start == NULL) {
+        return 0;
+    }
 
+    int length = 1;
+    struct Node *currNode = stack.start;
+
+    while(currNode->next != NULL) {
+        length++;
+        currNode = currNode->next;
+    }
+
+    return length;
+}
+
+void pop(struct Stack *stack) {
+    if(stack->start == NULL) {
+        return;
+    }
+
+    struct Node *startNode = stack->start;
+    struct Node *secondNode = startNode->next;
+
+    stack->start = secondNode;
+    free(startNode);
 }
 
 void push(int newVal, struct Stack *stack) {
@@ -41,8 +66,11 @@ void push(int newVal, struct Stack *stack) {
 }
 
 int peek(struct Stack stack) {
-    struct Node *topNode = stack.start;
+    if(stack.start == NULL) {
+        return NULL;
+    }
 
+    struct Node *topNode = stack.start;
     return topNode->value;
 }
 
@@ -57,21 +85,3 @@ void forEach(void (*cb) (int value), struct Stack stack) {
     (*cb) (currNode->value);
 }
 
-void printElem(int val) {
-    printf("current elem: %d\n", val);
-}
-
-
-int main(void) {
-    struct Stack newStack = { NULL, &pop, &push, &peek, &forEach };
-
-    newStack.push(1, &newStack);
-    newStack.push(2, &newStack);
-    newStack.push(3, &newStack);
-    newStack.forEach(&printElem, newStack);
-
-    int topVal = newStack.peek(newStack);
-    printf("sadfasdffasfasfasfasfasfadfs\n");
-    printf("top value: %d", topVal);
-    return 0;
-}
