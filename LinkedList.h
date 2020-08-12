@@ -2,29 +2,19 @@
 #include <stdlib.h> 
 #include <stdbool.h>
 
-// struct containing a value and a pointer to the 
-// next node in the linked list. If node in list 
-// is list.length - 2, pointer is null 
 struct Node {
     int value;
     struct Node *next;
 };
-// struct containing the start to the first node 
-// in the list in addition to pseudomember methods 
-// (not sure if this is correct in C. If someone 
-// who's looking at this -- not that anyone will --
-// knows what's good, that'd be gret to hear)
+
 struct LinkedList {
     struct Node *start;
-    int (*getLength)(struct LinkedList list);
-    void (*append)(int value, struct LinkedList *list);
-    void(*removeAtIndex)(int removeIndex, struct LinkedList *list);
-    void (*forEach)(void (*cb) (int val), struct LinkedList list);
-    struct LinkedList (*map)(int (*cb) (int val), struct LinkedList list);
-    struct LinkedList (*filter)(bool (*cb) (int val), struct LinkedList list);
 };
-// get the length of the list 
+
+//  get the length of the list 
 int getLength(struct LinkedList list) {
+    if(list.start == NULL) return 0;
+
     int length = 1;
     struct Node *currNode = list.start;
 
@@ -54,9 +44,13 @@ void append(int newVal, struct LinkedList *list) {
         currNode->next = newNode;
     }
 }
+
 // removes an element in the array at the index specified in the 
 // input parameter
 void removeAtIndex(int removeIndex, struct LinkedList *list) {
+    int listLength = getLength(*list);
+    if(listLength == 0 || removeIndex > listLength - 1) return;
+
     struct Node *currNode = list->start->next;
     struct Node *previousNode = list->start;
 
@@ -67,14 +61,14 @@ void removeAtIndex(int removeIndex, struct LinkedList *list) {
         return;
     }
 
-    int listLength = list->getLength(*list) - 1;
     int counter = 1;
 
-    while(currNode->next != NULL && counter <= removeIndex) {
+    while(currNode->next != NULL) {
         if(counter == removeIndex) {
             previousNode->next = currNode->next;
-
+        
             free(currNode);
+            return;
         }
 
         counter++;
@@ -82,11 +76,47 @@ void removeAtIndex(int removeIndex, struct LinkedList *list) {
         currNode = currNode->next;
     }
 
-    if(removeIndex == listLength) {
+    if(removeIndex == listLength - 1) {
         previousNode->next = NULL;
         free(currNode);
     }
 }
+
+void removeByValue(int valueToRemove, struct LinkedList *list) {
+    int listLength = getLength(*list);
+    if(listLength == 0) return;
+
+    struct Node *currNode = list->start->next;
+    struct Node *previousNode = list->start;
+
+    if(previousNode->value == valueToRemove) {
+        list->start = currNode;
+        free(previousNode);
+
+        return;
+    }
+
+    int counter = 1;
+
+    while(currNode->next != NULL) {
+        if(currNode->value == valueToRemove) {
+            previousNode->next = currNode->next;
+        
+            free(currNode);
+            return;
+        }
+
+        counter++;
+        previousNode = currNode;
+        currNode = currNode->next;
+    }
+
+    if(currNode->value == valueToRemove) {
+        previousNode->next = NULL;
+        free(currNode);
+    }
+}
+/*
 // implementing javascript's forEach array method on LinkedList
 // loops through all nodes in the list and calls a callback
 // function on each node. 
@@ -174,4 +204,5 @@ struct LinkedList filter(bool (*cb) (int val), struct LinkedList list) {
 
     return *newLinkedList;
     
-}
+}*/
+
