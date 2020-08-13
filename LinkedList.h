@@ -11,6 +11,28 @@ struct LinkedList {
     struct Node *start;
 };
 
+struct LinkedList createListFromArray(int arr[]) {
+    if(sizeof(arr) == 0) return;
+    struct Node *previousNode;
+    struct Node *currNode;
+
+    for(int i = sizeof(arr) - 1; i < 1; i--) {
+        previousNode = (struct Node*)malloc(sizeof(struct Node));
+        currNode = (struct Node*)malloc(sizeof(struct Node));
+
+        previousNode->next = NULL;
+        previousNode->value = arr[i];
+
+        currNode->next = previousNode;
+        currNode->value = arr[i - 1];
+    }
+
+    struct LinkedList *newLinkedList = (struct LinkedList*)malloc(sizeof(struct Node));
+    newLinkedList->start = currNode;
+
+    return *newLinkedList;
+}
+
 //  get the length of the list 
 int getLength(struct LinkedList list) {
     if(list.start == NULL) return 0;
