@@ -29,15 +29,21 @@ int main(void) {
 
     removeAtIndex(2, &linkedList);
     int lengthAfterRemovalAtIndex = getLength(linkedList);
-    printf("length after removal: %d/n", lengthAfterRemovalAtIndex);
+    printf("length after removal: %d\n", lengthAfterRemovalAtIndex);
     assert(lengthAfterRemovalAtIndex == 3);
 
     append(100, &linkedList);
     int lengthAfterValueToRemoveAddition = getLength(linkedList);
     assert(lengthAfterValueToRemoveAddition == 4);
     removeByValue(100, &linkedList);
-    
+
     assert(3 == getLength(linkedList));
 
-
+    int arr[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+    struct LinkedList *newLinkedList = (struct LinkedList*)malloc(sizeof(struct LinkedList));
+    newLinkedList = createListFromArray(10, arr);
+    printf("length of new array: %d\n", getLength(*newLinkedList));
+    assert(10 == getLength(*newLinkedList));
+    
+    
 }
