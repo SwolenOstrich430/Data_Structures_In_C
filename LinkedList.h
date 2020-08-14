@@ -61,13 +61,15 @@ void append(int newVal, struct LinkedList *list) {
 
     if(currNode == NULL) {
         list->start = newNode;
-    } else {
-        while(currNode->next != NULL) {
-            currNode = currNode->next;
-        }
-
-        currNode->next = newNode;
+        return;
+    } 
+    
+    while(currNode->next != NULL) {
+        currNode = currNode->next;
     }
+
+    currNode->next = newNode;
+    
 }
 
 // removes an element in the array at the index specified in the 
@@ -141,11 +143,11 @@ void removeByValue(int valueToRemove, struct LinkedList *list) {
         free(currNode);
     }
 }
-/*
+
 // implementing javascript's forEach array method on LinkedList
 // loops through all nodes in the list and calls a callback
 // function on each node. 
-void forEach(void (*cb) (struct Node*), struct LinkedList list) {
+void forEach(void (*cb) (struct Node *node), struct LinkedList list) {
     if(list.start == NULL) {
         printf("the list is empty");
         return;
@@ -160,74 +162,62 @@ void forEach(void (*cb) (struct Node*), struct LinkedList list) {
 
     (*cb) (currNode);
 }
+
 // implementing javascript's map method => for every element in 
 // the array, perform an operation on the value of it with the 
 // callback function, and add it to a new array
 struct LinkedList map(int (*cb) (int val), struct LinkedList list) {
-    if(list.start == NULL) {
-        printf("the list is empty");
-        return;
-    }
-    // get the starting node of the list to copy
-    struct Node *currNod = list.start;
     // starting new list for nodes to be appended to 
     struct LinkedList *newLinkedList = (struct LinkedList *)malloc(sizeof(struct LinkedList));
-    // initializing new linked list with member methods and null as pointer to starting node
-    newLinkedList->append = &append;
-    newLinkedList->forEach = &forEach;
-    newLinkedList->map = &map;
     newLinkedList->start = NULL;
-    // getting node to track current node in original list
+
+    if(list.start == NULL) {
+        printf("the list is empty");
+        return *newLinkedList;
+    }
+
+    int newVal;
     struct Node *currNode = list.start;
-    // while tracking node from original list does is not the last node in the list
+
     while(currNode->next != NULL) {
-        int newVal = (*cb) (currNode->value);
-        newLinkedList->append(newVal, newLinkedList);
+        newVal = (*cb) (currNode->value);
+        append(newVal, newLinkedList);
 
         currNode = currNode->next;
     }
 
     int lastNewVal = (*cb) (currNode->value);
-    newLinkedList->append(lastNewVal, newLinkedList);
+    append(lastNewVal, newLinkedList);
 
     return *newLinkedList;
 }
-// implementing javascript's filter method => for every element in 
-// the array, if the value of a node returns true when passed into 
-// the given callback function, add it to a new array, if it doesn't, 
-// do not add it to the new array. 
+
 struct LinkedList filter(bool (*cb) (int val), struct LinkedList list) {
+    struct LinkedList *newLinkedList = (struct LinkedList *)malloc(sizeof(struct LinkedList));
+    newLinkedList->start = NULL;
+
     if(list.start == NULL) {
         printf("the list is empty");
-        return;
+        return *newLinkedList;
     }
-    // get the starting node of the list to copy
-    struct Node *currNod = list.start;
-    // starting new list for nodes to be appended to 
-    struct LinkedList *newLinkedList = (struct LinkedList *)malloc(sizeof(struct LinkedList));
-    // initializing new linked list with member methods and null as pointer to starting node
-    newLinkedList->append = &append;
-    newLinkedList->forEach = &forEach;
-    newLinkedList->map = &map;
-    newLinkedList->filter = &filter;
-    newLinkedList->start = NULL;
-    // getting node to track current node in original list
+
     struct Node *currNode = list.start;
+    bool shouldAddToArray;
     // while tracking node from original list does is not the last node in the list
     while(currNode->next != NULL) {
-        bool shouldAddToArray = (*cb) (currNode->value);
+        shouldAddToArray = (*cb) (currNode->value);
 
         if(shouldAddToArray) {
-            newLinkedList->append(currNode->value, newLinkedList);
+            append(currNode->value, newLinkedList);
         }
 
         currNode = currNode->next;
     }
 
-    bool shouldAddFinalToArray = (*cb) (currNode->value);
-    if(shouldAddFinalToArray) newLinkedList->append(currNode->value, newLinkedList);
+    shouldAddToArray = (*cb) (currNode->value);
+    if(shouldAddToArray) append(currNode->value, newLinkedList);
 
     return *newLinkedList;
     
-}*/
+}
 

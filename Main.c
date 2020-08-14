@@ -4,6 +4,18 @@
 #include <assert.h>
 #include "./LinkedList.h"
 
+void addTwo(struct Node* node) {
+    node->value = node->value + 1000;
+}
+
+int multiplyByTen(int val) {
+    return val * 10;
+}
+
+bool numEquals(int num1) {
+    return num1 != 10060;
+}
+
 int main(void) {
     struct Node *node2 = (struct Node*)malloc(sizeof(struct Node));
     node2->value = 2;
@@ -45,5 +57,40 @@ int main(void) {
     printf("length of new array: %d\n", getLength(*newLinkedList));
     assert(10 == getLength(*newLinkedList));
     
+    forEach(addTwo, *newLinkedList);
+
+    struct Node *n = newLinkedList->start;
+    while(n->next != NULL) {
+        printf("val: %d\n", n->value);
+        n = n->next;
+    }
+
+    printf("val: %d\n", n->value);
+
+    struct LinkedList *mapLinkedList = (struct LinkedList*)malloc(sizeof(struct LinkedList));
+    *mapLinkedList = map(multiplyByTen, *newLinkedList);
+    printf("length of new array: %d\n", getLength(*mapLinkedList));
+    assert(10 == getLength(*mapLinkedList));
     
+    struct Node *n1 = mapLinkedList->start;
+    while(n1->next != NULL) {
+        printf("val: %d\n", n1->value);
+        n1 = n1->next;
+    }
+
+    printf("val: %d\n", n1->value);
+
+    struct LinkedList *filterLinkedList = (struct LinkedList*)malloc(sizeof(struct LinkedList));
+    *filterLinkedList = filter(*numEquals, *mapLinkedList);
+    printf("length of new array: %d\n", getLength(*filterLinkedList));
+    assert(9 == getLength(*filterLinkedList));
+    
+    struct Node *n2 = filterLinkedList->start;
+    while(n2->next != NULL) {
+        printf("val: %d\n", n2->value);
+        n2 = n2->next;
+    }
+
+    printf("val: %d\n", n2->value);
+
 }
