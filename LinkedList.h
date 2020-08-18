@@ -1,11 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h> 
 #include <stdbool.h>
-
-struct Node {
-    int value;
-    struct Node *next;
-};
+#include "./Node.h"
 
 struct LinkedList {
     struct Node *start;

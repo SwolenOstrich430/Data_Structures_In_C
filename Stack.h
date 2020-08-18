@@ -1,23 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h> 
 #include <stdbool.h>
-
-struct Node {
-    int value;
-    struct Node *next;
-};
+#include "./Node.h"
 
 struct Stack {
     struct Node *start;
-    void (*pop)(struct Stack *stack);
-    void (*push)(int newVal, struct Stack *stack);
-    int (*peek)(struct Stack stack);
-    int (*getLength)(struct Stack stack);
-    void (*forEach)(void (*cb) (int value), struct Stack stack);
 };
 
 
-int getLength(struct Stack stack)  {
+int getStackLength(struct Stack stack)  {
     if(stack.start == NULL) {
         return 0;
     }
@@ -48,37 +39,35 @@ void pop(struct Stack *stack) {
     } 
 
     struct Node *secondNode = startNode->next;
-
     stack->start = secondNode;
+
     free(startNode);
 }
 
 void push(int newVal, struct Stack *stack) {
     struct Node *newNode = (struct Node*)malloc(sizeof(struct Node));
     newNode->value = newVal;
-    newNode->next = NULL;
+    newNode->next = stack->start;
 
-    if(stack->start == NULL) {
-        stack->start = newNode;
-
-        return;
-    }
-
-    struct Node *currNode = stack->start;
-
-    while(currNode->next != NULL) {
-        currNode = currNode->next;
-    }
-
-    currNode->next = newNode;
+    stack->start = newNode;
 }
 
-int peek(struct Stack stack) {
+struct Node* peek(struct Stack stack) {
     if(stack.start == NULL) {
         return NULL;
     }
 
     struct Node *topNode = stack.start;
-    return topNode->value;
+    return topNode;
 }
 
+struct Stack createStackFromArray(int sizeOfArray, int *arr) {
+    struct Stack *newStack = (struct Stack*)malloc(sizeof(struct Stack));
+    newStack->start = NULL;
+
+    for(int i = sizeOfArray - 1; i >= 0; i--) {
+        push(arr[i], newStack);      
+    }
+
+    return *newStack;
+}
