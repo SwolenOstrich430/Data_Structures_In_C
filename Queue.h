@@ -1,23 +1,18 @@
 #include <stdio.h>
 #include <stdlib.h> 
 #include <stdbool.h>
-
-struct Node {
-    int value;
-    struct Node *next;
-};
+#include "./Node.h"
 
 struct Queue {
     struct Node *start;
     struct Node *end;
-    int (*getLength)(struct Queue queue);
-    void (*append)(int newVal, struct Queue *queue);
-    void (*forEach)(void (*cb) (int value), struct Queue *queue);
-    void (*removeStart)(struct Queue *queue);
-    int (*peek)(struct Queue *queue);
 };
 
-int getLength(struct Queue queue)  {
+bool isEmpty(struct Queue queue) {
+    return queue.start == NULL;
+}
+
+int getQueueLength(struct Queue queue)  {
     if(queue.start == NULL) {
         return 0;
     }
@@ -33,9 +28,9 @@ int getLength(struct Queue queue)  {
     return length;
 }
 
-void removeStart(struct Queue *queue) {
+struct Node* dequeue(struct Queue *queue) {
     if(queue->start == NULL) {
-        return;
+        return NULL;
     }
 
     struct Node *startNode = queue->start;
@@ -47,11 +42,10 @@ void removeStart(struct Queue *queue) {
         queue->start = startNode->next;
     }
 
-
-    free(startNode);
+    return startNode;
 }
 
-void append(int newVal, struct Queue *queue) {
+void enqueue(int newVal, struct Queue *queue) {
     struct Node *newNode = (struct Node*)malloc(sizeof(struct Node));
     newNode->value = newVal;
     newNode->next = NULL;
@@ -65,27 +59,32 @@ void append(int newVal, struct Queue *queue) {
     }
 }
 
-void forEach(void (*cb) (int value), struct Queue *queue) {
-    if(queue->start == NULL) {
-        printf("the list is empty");
-        return;
+struct Queue createQueueFromArray(int sizeOfQueue, int *arr) {
+    struct Queue *newQueue = (struct Queue*)malloc(sizeof(struct Queue));
+    newQueue->start = NULL;
+    newQueue->end = NULL;
+
+    for(int i = sizeOfQueue - 1; i >= 0; i--) {
+        enqueue(arr[i], newQueue);
     }
 
-    struct Node *currNode = queue->start;
-
-    while(currNode->next != NULL) {
-        (*cb) (currNode->value);
-       currNode = currNode->next;
-    }
-
-    (*cb) (currNode->value);
+    return *newQueue;
 }
 
-int peek(struct Queue *queue) {
+struct Node* front(struct Queue *queue) {
     if(queue->start == NULL) {
         printf("queue is empty");
         return NULL;
     }
 
-    return queue->start->value;
+    return queue->start;
+}
+
+struct Node* end(struct Queue *queue) {
+    if(queue->start == NULL) {
+        printf("queue is empty");
+        return NULL;
+    }
+
+    return queue->end;
 }
