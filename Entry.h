@@ -1,6 +1,6 @@
 struct Entry {
     char *key;
-    unsigned long value;
+    int value;
     struct Entry *next;
 };
 

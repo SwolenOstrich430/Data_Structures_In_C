@@ -8,6 +8,10 @@ int main(void) {
     insertIntoHashTable("cool", 100, &newHashTable);
     insertIntoHashTable("bannas", 200, &newHashTable);
     insertIntoHashTable("apples", 300, &newHashTable);
+    
+    insertIntoHashTable("apples", 300, &newHashTable);
+    insertIntoHashTable("apple", 300, &newHashTable);
+    insertIntoHashTable("apples", 600, &newHashTable);
     insertIntoHashTable("this hopefully works?", 400, &newHashTable);
 
     hashTableToString(newHashTable);
