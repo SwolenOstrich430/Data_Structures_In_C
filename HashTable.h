@@ -43,11 +43,25 @@ void insertIntoHashTable(char *key, unsigned long val, struct HashTable *hashTab
     newEntry->value = val;
     newEntry->next = NULL;
 
-    if(hashTable->entries[hashBucket] != NULL) {
-        hashTable->entries[hashBucket]->next = newEntry;
-    } else {
+    if(hashTable->entries[hashBucket] == NULL) {
         hashTable->entries[hashBucket] = newEntry;
+        return;
     }
+
+    struct Entry *currEntry = hashTable->entries[hashBucket]->next;
+    struct Entry *previousEntry = hashTable->entries[hashBucket];
+
+    while(previousEntry->next != NULL) {
+        if(strcmp(currEntry->key, key) == 0) {
+            currEntry->value = newEntry->value;
+            return;
+        }
+
+        currEntry = currEntry->next;
+        previousEntry = previousEntry->next;
+    }
+
+    previousEntry->next = newEntry;
 }
 
 void hashTableToString(struct HashTable hashTable) {
@@ -72,4 +86,3 @@ void hashTableToString(struct HashTable hashTable) {
 
     printf("END OF HASH TABLE\n");
 }
-

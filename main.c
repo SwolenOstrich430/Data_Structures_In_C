@@ -10,6 +10,9 @@ int main(void) {
     insertIntoHashTable("apples", 300, &newHashTable);
     
     insertIntoHashTable("apples", 300, &newHashTable);
+    insertIntoHashTable("apples", 300, &newHashTable);
+    insertIntoHashTable("apples", 300, &newHashTable);
+    insertIntoHashTable("apples", 3282347328, &newHashTable);
     insertIntoHashTable("apple", 300, &newHashTable);
     insertIntoHashTable("apples", 600, &newHashTable);
     insertIntoHashTable("this hopefully works?", 400, &newHashTable);
