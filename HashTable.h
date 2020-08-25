@@ -64,6 +64,36 @@ void insertIntoHashTable(char *key, unsigned long val, struct HashTable *hashTab
     previousEntry->next = newEntry;
 }
 
+void removeEntryFromHashTable(char *key, struct HashTable *hashTable) {
+    int hashBucket = getHash(key, hashTable->size);
+
+    struct Entry *entry = hashTable->entries[hashBucket];
+    if(entry == NULL) return;
+
+
+    if(entry->next == NULL && strcmp(entry->key, key) == 0) {
+        hashTable->entries[hashBucket] = NULL;
+        free(entry->key);
+        free(entry); 
+        return;
+    }
+
+    struct Entry *nextEntry = entry->next;
+
+    while(entry->next != NULL) {
+        if(strcmp(nextEntry->key, key) == 0) {
+            entry->next = nextEntry->next;
+            free(nextEntry->key);
+            free(nextEntry); 
+            return;
+        }
+
+        entry = entry->next;
+        nextEntry = nextEntry->next;
+    }
+
+}
+
 void hashTableToString(struct HashTable hashTable) {
     struct Entry *currEntry;
     

@@ -19,6 +19,9 @@ int main(void) {
 
     hashTableToString(newHashTable);
 
-    
+    removeEntryFromHashTable("apples", &newHashTable);
+    removeEntryFromHashTable("cool", &newHashTable);
+    removeEntryFromHashTable("ksdjfaksdfhakl", &newHashTable);
+    hashTableToString(newHashTable);
     return 0;
 }
