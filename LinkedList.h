@@ -46,8 +46,7 @@ int getLength(struct LinkedList list) {
 
     return length;
 }
-// "member method" that adds a new node to the end 
-// of the LinkedList
+
 void append(int newVal, struct LinkedList *list) {
     struct Node *currNode = list->start;
     struct Node *newNode = (struct Node*)malloc(sizeof(struct Node));
@@ -68,8 +67,6 @@ void append(int newVal, struct LinkedList *list) {
     
 }
 
-// removes an element in the array at the index specified in the 
-// input parameter
 void removeAtIndex(int removeIndex, struct LinkedList *list) {
     int listLength = getLength(*list);
     if(listLength == 0 || removeIndex > listLength - 1) return;
@@ -140,9 +137,7 @@ void removeByValue(int valueToRemove, struct LinkedList *list) {
     }
 }
 
-// implementing javascript's forEach array method on LinkedList
-// loops through all nodes in the list and calls a callback
-// function on each node. 
+
 void forEach(void (*cb) (struct Node *node), struct LinkedList list) {
     if(list.start == NULL) {
         printf("the list is empty");
@@ -159,11 +154,7 @@ void forEach(void (*cb) (struct Node *node), struct LinkedList list) {
     (*cb) (currNode);
 }
 
-// implementing javascript's map method => for every element in 
-// the array, perform an operation on the value of it with the 
-// callback function, and add it to a new array
 struct LinkedList map(int (*cb) (int val), struct LinkedList list) {
-    // starting new list for nodes to be appended to 
     struct LinkedList *newLinkedList = (struct LinkedList *)malloc(sizeof(struct LinkedList));
     newLinkedList->start = NULL;
 
@@ -199,7 +190,7 @@ struct LinkedList filter(bool (*cb) (int val), struct LinkedList list) {
 
     struct Node *currNode = list.start;
     bool shouldAddToArray;
-    // while tracking node from original list does is not the last node in the list
+    
     while(currNode->next != NULL) {
         shouldAddToArray = (*cb) (currNode->value);
 
